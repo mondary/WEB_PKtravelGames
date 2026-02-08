@@ -12,10 +12,9 @@ ls -la .skills/
 
 ## Architecture projet
 
-- `web/` : Sources du site (HTML, CSS, JS vanilla) - directement déployable
-- `app/` : Futur packaging mobile (Capacitor/APK)
-- `dist/` : Ne pas utiliser (pas de build)
+- `web/` : Site (HTML, CSS, JS vanilla) - directement déployable
 - `.skills/` : Lien symbolique vers les skills partagées
+- Pas de build, pas de node_modules
 
 ## Déploiement OVH
 

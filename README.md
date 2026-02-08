@@ -43,16 +43,11 @@ web/           # Site déployable (vanilla JS)
 ├── icons/     # PWA icons
 ├── games.db   # Base SQLite (sql.js)
 └── sw.js      # Service Worker
-app/           # Futur packaging mobile
 ```
 
 ## 🚀 Déploiement
 
-Pas de build. Déployer directement le dossier `web/` :
-
-```bash
-./scripts/deploy_ftp.sh
-```
+Pas de build. Déployer directement le dossier `web/` via FTP (voir skill `skill_FTP_OVH_deploy.md`).
 
 ## 🧾 Changelog
 
