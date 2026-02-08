@@ -128,30 +128,46 @@ body::before {
   animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.home-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 1rem 0 2rem;
+  padding: 0.5rem;
+}
+
 .hero-logo {
-  width: 160px;
-  height: 160px;
-  margin: 2rem auto;
-  border-radius: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.3);
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 92, 246, 0.2);
   animation: float 4s infinite ease-in-out;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .title-container {
-  text-align: center;
-  margin-bottom: 2.5rem;
+  text-align: left;
 }
 
 .app-title {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #ec4899 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+  line-height: 1.1;
+}
+
+.app-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  letter-spacing: 0.1em;
 }
 
 .card {
@@ -250,16 +266,56 @@ input[type="text"]:focus {
 
 /* Home Screen */
 .menu-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
 }
 
 .menu-item {
-  height: 200px;
-  font-size: 1.2rem;
-  border-radius: 28px;
+  height: 140px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+}
+
+.menu-item img {
+  width: 120px;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.menu-item:active img {
+  transform: scale(1.1);
+}
+
+.menu-item-content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.menu-item-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.menu-item-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
 }
 
 .icon-circle {
@@ -500,4 +556,118 @@ input:checked + .slider:before {
   font-weight: 800;
   margin-left: 0.5rem;
   text-transform: uppercase;
+}
+
+/* Landscape Mode */
+@media (orientation: landscape) {
+  #app {
+    overflow: hidden;
+  }
+
+  .screen {
+    padding: 1rem;
+    max-width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .home-header {
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  .hero-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .app-title {
+    font-size: 1.3rem;
+  }
+
+  .menu-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0;
+    flex: 1;
+  }
+
+  .menu-item {
+    height: 100px;
+    flex: 1 1 200px;
+    max-width: 280px;
+  }
+
+  .menu-item img {
+    width: 80px;
+  }
+
+  .menu-item-content {
+    padding: 0.75rem;
+  }
+
+  .menu-item-title {
+    font-size: 1rem;
+  }
+
+  .menu-item-subtitle {
+    font-size: 0.7rem;
+  }
+
+  /* Heads Up landscape */
+  .huge-card {
+    aspect-ratio: auto;
+    height: 50vh;
+    font-size: 2.5rem;
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .timer-pill {
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .button {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+/* Small height screens */
+@media (max-height: 500px) {
+  .screen {
+    padding: 0.5rem;
+  }
+
+  .home-header {
+    margin: 0.5rem 0;
+  }
+
+  .hero-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .menu-item {
+    height: 80px;
+  }
+
+  .menu-item img {
+    width: 70px;
+  }
+
+  .huge-card {
+    height: 40vh;
+    font-size: 2rem;
+  }
 }

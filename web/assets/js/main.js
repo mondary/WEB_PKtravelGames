@@ -70,30 +70,36 @@ function renderHome() {
   const view = document.createElement('div')
   view.className = 'screen'
   view.innerHTML = `
-    <img src="assets/images/logo.png" alt="Travel Games Logo" class="hero-logo">
-    <div class="title-container">
-      <h1 class="app-title">Travel Games</h1>
-      <p style="color: rgba(255,255,255,0.5); font-weight: 500; font-size: 0.9rem; margin-top: 0.5rem;">BY POUARK</p>
-    </div>
+    <header class="home-header">
+      <img src="assets/images/logo.png" alt="Travel Games Logo" class="hero-logo">
+      <div class="title-container">
+        <h1 class="app-title">Travel Games</h1>
+        <p class="app-subtitle">BY POUARK</p>
+      </div>
+    </header>
+
     <div class="menu-grid">
-      <button class="button menu-item" id="btn-pigeon" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch;">
-        <img src="assets/images/pigeon.png" style="width: 100%; height: 60%; object-fit: cover;">
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800;">
-          LE PIGEON
+      <button class="button menu-item" id="btn-pigeon">
+        <img src="assets/images/pigeon.png" alt="Pigeon">
+        <div class="menu-item-content">
+          <div class="menu-item-title">LE PIGEON</div>
+          <div class="menu-item-subtitle">Bluff & Mensonges</div>
         </div>
       </button>
 
-      <button class="button secondary menu-item" id="btn-heads-up" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch;">
-        <img src="assets/images/frontal.png" style="width: 100%; height: 60%; object-fit: cover;">
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800;">
-          LE FRONTAL
+      <button class="button secondary menu-item" id="btn-heads-up">
+        <img src="assets/images/frontal.png" alt="Frontal">
+        <div class="menu-item-content">
+          <div class="menu-item-title">LE FRONTAL</div>
+          <div class="menu-item-subtitle">Devinez le mot sur votre front</div>
         </div>
       </button>
 
-      <button class="button menu-item" id="btn-undercover" style="background: linear-gradient(135deg, #374151 0%, #111827 100%); padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch;">
-        <img src="assets/images/espion.png" style="width: 100%; height: 60%; object-fit: cover;">
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800;">
-          L'ESPION
+      <button class="button menu-item" id="btn-undercover" style="background: linear-gradient(135deg, #374151 0%, #111827 100%);">
+        <img src="assets/images/espion.png" alt="Espion">
+        <div class="menu-item-content">
+          <div class="menu-item-title">L'ESPION</div>
+          <div class="menu-item-subtitle">Débusquez l'intrus</div>
         </div>
       </button>
     </div>
@@ -294,10 +300,7 @@ function endHeadsUp() {
   window.removeEventListener('deviceorientation', handleOrientation)
   unlockOrientation()
   playSound('alarm')
-  setTimeout(() => {
-    alert(`🏁 SCORE : ${state.score}`)
-    setState({ view: 'home' })
-  }, 600)
+  setState({ step: 'result' })
 }
 
 function initMotion() {
@@ -361,6 +364,21 @@ function renderHeadsUp() {
   } else if (state.step === 'countdown') {
     view.innerHTML = `<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;"><div style="font-size: 6rem; font-weight: 900; color: var(--accent); animation: pulse 1s infinite;">3</div><p class="label">SUR LE FRONT !</p></div>`
     app.appendChild(view)
+  } else if (state.step === 'result') {
+    view.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    view.innerHTML = `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 2rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+        <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; text-transform: uppercase;">Temps écoulé !</h1>
+        <div style="font-size: 6rem; font-weight: 900; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,0.3); margin: 1rem 0;">${state.score}</div>
+        <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 3rem;">points</p>
+        <button class="button" id="hu-replay" style="width: 100%; max-width: 300px; margin-bottom: 1rem;">REJOUER</button>
+        <button class="button ghost" id="hu-home" style="width: 100%; max-width: 300px;">ACCUEIL</button>
+      </div>
+    `
+    app.appendChild(view)
+    document.querySelector('#hu-replay').onclick = () => confirmStartHeadsUp()
+    document.querySelector('#hu-home').onclick = () => setState({ view: 'home' })
   } else {
     const card = headsUpCards[state.currentCardIndex]
     view.innerHTML = `<div style="text-align: center;"><div class="timer-pill">${state.timer}S</div></div><div class="huge-card card">${card}</div><div style="text-align: center;"><div class="score-badge">SCORE: ${state.score} ${state.childMode ? '<span class="child-tag">Kids</span>' : ''}</div><div class="label" style="margin-top: 2rem; opacity: 0.5;">↑ TILT ARRIÈRE = OK<br>↓ TILT AVANT = PASSER</div></div>`

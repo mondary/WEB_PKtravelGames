@@ -4,50 +4,33 @@
 
 [🇫🇷 FR](README.md) · [🇬🇧 EN](README_en.md)
 
-✨ Collection de jeux sociaux pour vos voyages et soirées entre amis. PWA installable, 100% vanilla JS.
+✨ Mini‑suite de jeux sociaux pour voyages et soirées. PWA installable, 100% vanilla JS, offline.
 
 ## ✅ Fonctionnalités
 
-- **🐦 Le Pigeon** : Jeu de culture et de bluff. Inventez des mensonges crédibles pour piéger vos amis.
-- **📱 Le Frontal** : Placez le téléphone sur votre front, faites deviner par inclinaison (accéléromètre).
-- **🕵️ L'Espion** : Déduction sociale. Identifiez l'intrus parmi vous grâce à des indices subtils.
-- **📲 PWA** : Installable sur mobile, fonctionne hors-ligne.
+- 🐦 **Le Pigeon** : culture & bluff (mensonges crédibles à inventer).
+- 📱 **Le Frontal** : deviner par inclinaison du téléphone (accéléromètre).
+- 🕵️ **L'Espion** : déduction sociale avec rôles cachés.
+- 📲 **PWA** : installable sur mobile, fonctionne hors‑ligne.
 
 ## 🧠 Utilisation
 
-### Le Pigeon
-1. Un joueur reçoit une question et sa vraie réponse
-2. Il invente deux fausses réponses crédibles
-3. Les autres doivent trouver la vraie parmi les trois
+**Le Pigeon**
+1. Un joueur reçoit une question + sa vraie réponse.
+2. Il invente deux fausses réponses crédibles.
+3. Les autres devinent la vraie parmi les trois.
 
-### Le Frontal
-1. Collez le téléphone sur votre front
-2. Inclinez **haut** = bonne réponse
-3. Inclinez **bas** = passer
-4. Maximum de points en 60 secondes
+**Le Frontal**
+1. Placez le téléphone sur le front.
+2. Inclinez **haut** = bonne réponse.
+3. Inclinez **bas** = passer.
+4. Objectif : max de points en 60 secondes.
 
-### L'Espion
-- **Civils** : mot A
-- **Undercovers** : mot B (proche de A)
-- **Mr. White** : rien
-- Décrivez, votez, éliminez le suspect !
-
-## 📁 Structure
-
-```
-web/           # Site déployable (vanilla JS)
-├── index.html
-├── css/
-├── js/
-├── images/
-├── icons/     # PWA icons
-├── games.db   # Base SQLite (sql.js)
-└── sw.js      # Service Worker
-```
-
-## 🚀 Déploiement
-
-Pas de build. Déployer directement le dossier `web/` via FTP (voir skill `skill_FTP_OVH_deploy.md`).
+**L'Espion**
+- **Civils** : mot A.
+- **Undercovers** : mot B (proche).
+- **Mr. White** : aucun mot.
+- Décrivez, votez, éliminez l’intrus.
 
 ## 🧾 Changelog
 
@@ -56,4 +39,4 @@ Pas de build. Déployer directement le dossier `web/` via FTP (voir skill `skill
 
 ## 🔗 Liens
 
-- [README_en.md](README_en.md)
+- EN README : README_en.md

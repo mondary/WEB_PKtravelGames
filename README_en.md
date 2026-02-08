@@ -4,50 +4,33 @@
 
 [🇬🇧 EN](README_en.md) · [🇫🇷 FR](README.md)
 
-✨ Social party games collection for travel and evenings with friends. Installable PWA, 100% vanilla JS.
+✨ Social party games suite for travel and nights with friends. Installable PWA, 100% vanilla JS, offline.
 
 ## ✅ Features
 
-- **🐦 Le Pigeon** : Trivia & bluff game. Invent believable lies to fool your friends.
-- **📱 Le Frontal** : Place the phone on your forehead, guess by tilting (accelerometer).
-- **🕵️ L'Espion** : Social deduction. Identify the impostor among you with subtle clues.
-- **📲 PWA** : Installable on mobile, works offline.
+- 🐦 **Le Pigeon**: trivia & bluff (invent believable lies).
+- 📱 **Le Frontal**: guess by tilting the phone (accelerometer).
+- 🕵️ **L'Espion**: social deduction with hidden roles.
+- 📲 **PWA**: installable on mobile, works offline.
 
 ## 🧠 Usage
 
-### Le Pigeon
-1. One player receives a question and its true answer
-2. They invent two believable fake answers
-3. Others must find the real one among three
+**Le Pigeon**
+1. One player gets a question + the true answer.
+2. They invent two believable fake answers.
+3. Others guess the real one among three.
 
-### Le Frontal
-1. Put the phone on your forehead
-2. Tilt **up** = correct answer
-3. Tilt **down** = pass
-4. Maximum points in 60 seconds
+**Le Frontal**
+1. Place the phone on your forehead.
+2. Tilt **up** = correct.
+3. Tilt **down** = pass.
+4. Goal: max points in 60 seconds.
 
-### L'Espion
-- **Civilians** : word A
-- **Undercovers** : word B (close to A)
-- **Mr. White** : nothing
-- Describe, vote, eliminate the suspect!
-
-## 📁 Structure
-
-```
-web/           # Deployable site (vanilla JS)
-├── index.html
-├── css/
-├── js/
-├── images/
-├── icons/     # PWA icons
-├── games.db   # SQLite database (sql.js)
-└── sw.js      # Service Worker
-```
-
-## 🚀 Deployment
-
-No build needed. Deploy the `web/` folder directly via FTP (see `skill_FTP_OVH_deploy.md`).
+**L'Espion**
+- **Civilians**: word A.
+- **Undercovers**: word B (close).
+- **Mr. White**: no word.
+- Describe, vote, eliminate the intruder.
 
 ## 🧾 Changelog
 
@@ -56,4 +39,4 @@ No build needed. Deploy the `web/` folder directly via FTP (see `skill_FTP_OVH_d
 
 ## 🔗 Links
 
-- [README.md](README.md)
+- FR README: README.md
