@@ -210,6 +210,57 @@ function renderPigeon() {
 let headsUpTimer = null
 let headsUpCards = []
 let lastTilt = 0
+let audioCtx = null
+
+// Sons avec Web Audio API
+function playSound(type) {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+  const osc = audioCtx.createOscillator()
+  const gain = audioCtx.createGain()
+  osc.connect(gain)
+  gain.connect(audioCtx.destination)
+
+  if (type === 'ok') {
+    // Son aigu joyeux (montant)
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime)
+    osc.frequency.linearRampToValueAtTime(900, audioCtx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime)
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2)
+    osc.start(); osc.stop(audioCtx.currentTime + 0.2)
+  } else if (type === 'ko') {
+    // Son grave (descendant)
+    osc.frequency.setValueAtTime(400, audioCtx.currentTime)
+    osc.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 0.15)
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime)
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.25)
+    osc.start(); osc.stop(audioCtx.currentTime + 0.25)
+  } else if (type === 'alarm') {
+    // Alarme fin de partie (3 bips)
+    for (let i = 0; i < 3; i++) {
+      const o = audioCtx.createOscillator()
+      const g = audioCtx.createGain()
+      o.connect(g); g.connect(audioCtx.destination)
+      o.frequency.value = 800
+      g.gain.setValueAtTime(0.4, audioCtx.currentTime + i * 0.2)
+      g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + i * 0.2 + 0.15)
+      o.start(audioCtx.currentTime + i * 0.2)
+      o.stop(audioCtx.currentTime + i * 0.2 + 0.15)
+    }
+  }
+}
+
+// Orientation paysage
+function lockLandscape() {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock('landscape').catch(() => {})
+  }
+}
+
+function unlockOrientation() {
+  if (screen.orientation && screen.orientation.unlock) {
+    screen.orientation.unlock()
+  }
+}
 
 function startHeadsUp() {
   setState({ view: 'heads-up', step: 'setup' })
@@ -220,17 +271,33 @@ function confirmStartHeadsUp() {
   const res = db.exec(`SELECT content FROM heads_up WHERE category = '${category}'`);
   headsUpCards = res[0].values.map(v => v[0]).sort(() => Math.random() - 0.5);
 
+  lockLandscape()
   setState({ step: 'countdown', timer: 60, score: 0, currentCardIndex: 0 })
   setTimeout(() => { setState({ step: 'active' }); startTimer(); initMotion(); }, 2000)
 }
 
 function startTimer() {
-  headsUpTimer = setInterval(() => { if (state.timer > 0) setState({ timer: state.timer - 1 }); else endHeadsUp(); }, 1000)
+  headsUpTimer = setInterval(() => {
+    if (state.timer > 0) {
+      state.timer--
+      // Mise à jour directe sans re-render complet
+      const timerEl = document.querySelector('.timer-pill')
+      if (timerEl) timerEl.textContent = state.timer + 'S'
+    } else {
+      endHeadsUp()
+    }
+  }, 1000)
 }
 
 function endHeadsUp() {
-  clearInterval(headsUpTimer); window.removeEventListener('deviceorientation', handleOrientation)
-  alert(`🏁 SCORE : ${state.score}`); setState({ view: 'home' })
+  clearInterval(headsUpTimer)
+  window.removeEventListener('deviceorientation', handleOrientation)
+  unlockOrientation()
+  playSound('alarm')
+  setTimeout(() => {
+    alert(`🏁 SCORE : ${state.score}`)
+    setState({ view: 'home' })
+  }, 600)
 }
 
 function initMotion() {
@@ -247,9 +314,17 @@ function handleOrientation(event) {
 }
 
 function handleHeadsUpAction(isSuccess) {
-  if (isSuccess) { state.score++; if (navigator.vibrate) navigator.vibrate(100); }
-  else { if (navigator.vibrate) navigator.vibrate([50, 50]); }
-  state.currentCardIndex++; if (state.currentCardIndex >= headsUpCards.length) endHeadsUp(); else render();
+  if (isSuccess) {
+    state.score++
+    playSound('ok')
+    if (navigator.vibrate) navigator.vibrate(100)
+  } else {
+    playSound('ko')
+    if (navigator.vibrate) navigator.vibrate([50, 50])
+  }
+  state.currentCardIndex++
+  if (state.currentCardIndex >= headsUpCards.length) endHeadsUp()
+  else render()
 }
 
 function renderHeadsUp() {
