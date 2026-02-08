@@ -1,5 +1,3 @@
-import './style.css'
-
 const app = document.querySelector('#app')
 
 let db = null;
@@ -25,10 +23,10 @@ async function initDatabase() {
   try {
     const initSqlJs = window.initSqlJs;
     const SQL = await initSqlJs({
-      locateFile: file => `/${file}`
+      locateFile: file => file
     });
 
-    const response = await fetch('/games.db');
+    const response = await fetch('games.php', { cache: 'no-store' });
     const arrayBuffer = await response.arrayBuffer();
     db = new SQL.Database(new Uint8Array(arrayBuffer));
 
@@ -72,28 +70,28 @@ function renderHome() {
   const view = document.createElement('div')
   view.className = 'screen'
   view.innerHTML = `
-    <img src="/logo.png" alt="Travel Games Logo" class="hero-logo">
+    <img src="images/logo.png" alt="Travel Games Logo" class="hero-logo">
     <div class="title-container">
       <h1 class="app-title">Travel Games</h1>
       <p style="color: rgba(255,255,255,0.5); font-weight: 500; font-size: 0.9rem; margin-top: 0.5rem;">BY POUARK</p>
     </div>
     <div class="menu-grid">
       <button class="button menu-item" id="btn-pigeon" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch;">
-        <img src="/pigeon.png" style="width: 100%; height: 60%; object-fit: cover;">
+        <img src="images/pigeon.png" style="width: 100%; height: 60%; object-fit: cover;">
         <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800;">
           LE PIGEON
         </div>
       </button>
 
       <button class="button secondary menu-item" id="btn-heads-up" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch;">
-        <img src="/frontal.png" style="width: 100%; height: 60%; object-fit: cover;">
+        <img src="images/frontal.png" style="width: 100%; height: 60%; object-fit: cover;">
         <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800;">
           LE FRONTAL
         </div>
       </button>
 
       <button class="button menu-item" id="btn-undercover" style="background: linear-gradient(135deg, #374151 0%, #111827 100%); padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: stretch;">
-        <img src="/espion.png" style="width: 100%; height: 60%; object-fit: cover;">
+        <img src="images/espion.png" style="width: 100%; height: 60%; object-fit: cover;">
         <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800;">
           L'ESPION
         </div>

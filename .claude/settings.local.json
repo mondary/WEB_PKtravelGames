@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(chmod:*)",
+      "Bash(source ~/.zshrc)",
+      "Bash(./scripts/deploy_ftp.sh:*)",
+      "WebFetch(domain:pk.music-music.fr)",
+      "Bash(ls:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+# Allow .db and .wasm files
+AddType application/octet-stream .db .sqlite
+AddType application/wasm .wasm
+
+# Enable CORS for wasm
+<FilesMatch "\.(wasm|db|sqlite)$">
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>

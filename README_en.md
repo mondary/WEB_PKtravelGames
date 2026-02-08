@@ -1,55 +1,64 @@
 # PK Travel Games
 
-![Project icon](logo.png)
+![Project icon](icon.png)
 
 [🇬🇧 EN](README_en.md) · [🇫🇷 FR](README.md)
 
-✨ A collection of premium social games for your travels, parties, and commutes, designed with a modern and interactive aesthetic.
+✨ Social party games collection for travel and evenings with friends. Installable PWA, 100% vanilla JS.
 
 ## ✅ Features
 
-- **📱 Premium Design**: Interface based on Glassmorphism, vibrant gradients, and smooth animations.
-- **🐦 The Pigeon**: A game of trivia and bluffing. Invent more credible lies than the truth to trick your friends.
-- **📱 Heads Up**: Place the phone on your forehead and guess celebrities or characters via tilt gestures (Accelerometer).
-- **🕵️ Undercover**: A social deduction game. Identify the intruder (Undercover or Mr. White) among you using subtle clues.
+- **🐦 Le Pigeon** : Trivia & bluff game. Invent believable lies to fool your friends.
+- **📱 Le Frontal** : Place the phone on your forehead, guess by tilting (accelerometer).
+- **🕵️ L'Espion** : Social deduction. Identify the impostor among you with subtle clues.
+- **📲 PWA** : Installable on mobile, works offline.
 
 ## 🧠 Usage
 
-### 1. The Pigeon
-- One player receives a question and its correct answer.
-- This player must invent two credible fake answers.
-- Other players must find the real answer among the three options.
+### Le Pigeon
+1. One player receives a question and its true answer
+2. They invent two believable fake answers
+3. Others must find the real one among three
 
-### 2. Heads Up
-- Choose the mode and stick the phone on your forehead (screen facing others).
-- Tilt **up** to validate a correct answer.
-- Tilt **down** to skip to the next one.
-- The goal is to guess as many as possible in 60 seconds.
+### Le Frontal
+1. Put the phone on your forehead
+2. Tilt **up** = correct answer
+3. Tilt **down** = pass
+4. Maximum points in 60 seconds
 
-### 3. Undercover
-- **Civilians**: Receive word A.
-- **Undercovers**: Receive word B (closely related to A).
-- **Mr. White**: Receives no word.
-- Each player describes their word. Then, vote to eliminate the one who seems suspicious!
+### L'Espion
+- **Civilians** : word A
+- **Undercovers** : word B (close to A)
+- **Mr. White** : nothing
+- Describe, vote, eliminate the suspect!
 
-## ⚙️ Settings
-- The game is optimized for Mobile (Responsive Design).
-- Uses the `DeviceOrientation` API for "Heads Up" mode.
-- Integrated vibration system for premium haptic feedback.
+## 📁 Structure
 
-## 📦 Build & Package
-The application is built with **Vite**:
-```bash
-npm install
-npm run dev    # Launch locally
-npm run build  # Prepare for production
+```
+web/           # Deployable site (vanilla JS)
+├── index.html
+├── css/
+├── js/
+├── images/
+├── icons/     # PWA icons
+├── games.db   # SQLite database (sql.js)
+└── sw.js      # Service Worker
+app/           # Future mobile packaging
 ```
 
-## 🧪 Install (Antigravity)
-Simply clone the repository and launch the development server. No backend required, everything is client-side (Vanilla JS).
+## 🚀 Deployment
+
+No build needed. Deploy the `web/` folder directly:
+
+```bash
+./scripts/deploy_ftp.sh
+```
 
 ## 🧾 Changelog
-- **1.0.0**: Initial release with 3 game modes: The Pigeon, Heads Up, and Undercover. Glassmorphism interface and motion tracking system.
+
+- **1.1.0** : Vanilla JS refactor (removed Vite/node_modules), new web/ architecture, OVH fix (PHP proxy for .db)
+- **1.0.0** : Initial release - 3 games, PWA, vanilla JS
 
 ## 🔗 Links
-- FR README: [README.md](README.md)
+
+- [README.md](README.md)

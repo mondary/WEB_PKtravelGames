@@ -1,55 +1,64 @@
 # PK Travel Games
 
-![Project icon](logo.png)
+![Project icon](icon.png)
 
 [🇫🇷 FR](README.md) · [🇬🇧 EN](README_en.md)
 
-✨ Une collection de jeux sociaux premium pour vos voyages, soirées et trajets, conçue avec une esthétique moderne et interactive.
+✨ Collection de jeux sociaux pour vos voyages et soirées entre amis. PWA installable, 100% vanilla JS.
 
 ## ✅ Fonctionnalités
 
-- **📱 Design Premium** : Interface basée sur le Glassmorphism, des dégradés vibrants et des animations fluides.
-- **🐦 Le Pigeon** : Un jeu de culture et de bluff. Inventez des mensonges plus crédibles que la vérité pour piéger vos amis.
-- **📱 Le Frontal (Heads Up)** : Placez le téléphone sur votre front et faites deviner des célébrités ou personnages par inclinaison (Accéléromètre).
-- **🕵️ L'Espion (Undercover)** : Un jeu de déduction sociale. Identifiez l'intrus (Undercover ou Mr. White) parmi vous grâce à des indices subtils.
+- **🐦 Le Pigeon** : Jeu de culture et de bluff. Inventez des mensonges crédibles pour piéger vos amis.
+- **📱 Le Frontal** : Placez le téléphone sur votre front, faites deviner par inclinaison (accéléromètre).
+- **🕵️ L'Espion** : Déduction sociale. Identifiez l'intrus parmi vous grâce à des indices subtils.
+- **📲 PWA** : Installable sur mobile, fonctionne hors-ligne.
 
 ## 🧠 Utilisation
 
-### 1. Le Pigeon
-- Un joueur reçoit une question et sa réponse correcte.
-- Ce joueur doit inventer deux fausses réponses crédibles.
-- Les autres joueurs doivent retrouver la vraie réponse parmi les trois propositions.
+### Le Pigeon
+1. Un joueur reçoit une question et sa vraie réponse
+2. Il invente deux fausses réponses crédibles
+3. Les autres doivent trouver la vraie parmi les trois
 
-### 2. Le Frontal
-- Choisissez le mode et collez le téléphone sur votre front (écran vers les autres).
-- Inclinez vers le **haut** pour valider une bonne réponse.
-- Inclinez vers le **bas** pour passer à la suivante.
-- Le but est d'en déviner un maximum en 60 secondes.
+### Le Frontal
+1. Collez le téléphone sur votre front
+2. Inclinez **haut** = bonne réponse
+3. Inclinez **bas** = passer
+4. Maximum de points en 60 secondes
 
-### 3. L'Espion (Undercover)
-- **Civils** : Reçoivent le mot A.
-- **Undercovers** : Reçoivent le mot B (proche de A).
-- **Mr. White** : Ne reçoit rien.
-- Chaque joueur décrit son mot. Votez ensuite pour éliminer celui qui vous paraît suspect !
+### L'Espion
+- **Civils** : mot A
+- **Undercovers** : mot B (proche de A)
+- **Mr. White** : rien
+- Décrivez, votez, éliminez le suspect !
 
-## ⚙️ Réglages
-- Le jeu est optimisé pour Mobile (Responsive Design).
-- Utilise l'API `DeviceOrientation` pour le mode "Le Frontal".
-- Système de vibration intégré pour un retour haptique premium.
+## 📁 Structure
 
-## 📦 Build & Package
-L'application est construite avec **Vite** :
-```bash
-npm install
-npm run dev    # Lancer en local
-npm run build  # Préparer pour la production
+```
+web/           # Site déployable (vanilla JS)
+├── index.html
+├── css/
+├── js/
+├── images/
+├── icons/     # PWA icons
+├── games.db   # Base SQLite (sql.js)
+└── sw.js      # Service Worker
+app/           # Futur packaging mobile
 ```
 
-## 🧪 Installation (Antigravity)
-Clonez simplement le dépôt et lancez le serveur de développement. Aucun backend requis, tout est géré côté client (Vanilla JS).
+## 🚀 Déploiement
+
+Pas de build. Déployer directement le dossier `web/` :
+
+```bash
+./scripts/deploy_ftp.sh
+```
 
 ## 🧾 Changelog
-- **1.0.0** : Release initiale avec 3 modes de jeux : Le Pigeon, Le Frontal et Undercover. Interface Glassmorphism et système de mouvement.
+
+- **1.1.0** : Refonte vanilla JS (suppression Vite/node_modules), nouvelle architecture web/, fix OVH (PHP proxy pour .db)
+- **1.0.0** : Release initiale - 3 jeux, PWA, vanilla JS
 
 ## 🔗 Liens
-- EN README : [README_en.md](README_en.md)
+
+- [README_en.md](README_en.md)
