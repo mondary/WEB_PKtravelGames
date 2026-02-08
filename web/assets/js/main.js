@@ -40,6 +40,12 @@ async function initDatabase() {
 
 function setState(newState) {
   state = { ...state, ...newState }
+
+  // Toggle kid-mode class on body for theme switching
+  if ('childMode' in newState) {
+    document.body.classList.toggle('kid-mode', newState.childMode)
+  }
+
   render()
 }
 
@@ -166,7 +172,7 @@ function renderPigeon() {
     </div>
 
     <div style="text-align: center; margin-bottom: 1.5rem;">
-      <div class="score-badge">CARTE ${state.currentCardPointer + 1} / ${totalPossible} ${state.childMode ? '<span class="child-tag">Aidé</span>' : ''}</div>
+      <div class="score-badge">CARTE #${q.id} / 600 ${state.childMode ? '<span class="child-tag">Aidé</span>' : ''}</div>
     </div>
 
     <div class="card">
@@ -213,6 +219,37 @@ function renderPigeon() {
 }
 
 // --- HEADS UP ---
+// Fonction pour générer des indices
+function getHint(word) {
+  const hints = {
+    // Personnages standards
+    'Batman': 'Super-héros de Gotham City',
+    'Superman': 'L\'homme d\'acier',
+    'Picasso': 'Peintre cubiste espagnol',
+    'Einstein': 'Physicien, E=mc²',
+    'Madonna': 'Reine de la pop',
+    'Shakira': 'Chanteuse colombienne',
+    'Zidane': 'Footballeur français, coup de tête',
+    'Mbappé': 'Attaquant du Real Madrid',
+    'Luffy': 'Pirate au chapeau de paille',
+    'Naruto': 'Ninja blond avec un renard',
+
+    // Personnages enfants
+    'Mickey': 'Souris avec de grandes oreilles',
+    'Pikachu': 'Pokémon électrique jaune',
+    'Elsa': 'Reine des neiges',
+    'Olaf': 'Bonhomme de neige qui aime l\'été',
+    'Simba': 'Jeune lion roi',
+    'Mario': 'Plombier italien en rouge',
+    'Sonic': 'Hérisson bleu très rapide',
+    'Dora': 'Exploratrice avec un sac à dos',
+    'Peppa Pig': 'Cochon rose en famille',
+    'Bob l\'éponge': 'Éponge jaune sous la mer'
+  };
+
+  return hints[word] || `Indice pour ${word}`;
+}
+
 let headsUpTimer = null
 let headsUpCards = []
 let lastTilt = 0
@@ -258,7 +295,7 @@ function playSound(type) {
 // Orientation paysage
 function lockLandscape() {
   if (screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock('landscape').catch(() => {})
+    screen.orientation.lock('landscape').catch(() => { })
   }
 }
 
@@ -278,7 +315,14 @@ function confirmStartHeadsUp() {
   headsUpCards = res[0].values.map(v => v[0]).sort(() => Math.random() - 0.5);
 
   lockLandscape()
-  setState({ step: 'countdown', timer: 60, score: 0, currentCardIndex: 0 })
+  setState({
+    step: 'countdown',
+    timer: 60,
+    score: 0,
+    currentCardIndex: 0,
+    foundWords: [],
+    missedWords: []
+  })
   setTimeout(() => { setState({ step: 'active' }); startTimer(); initMotion(); }, 2000)
 }
 
@@ -310,24 +354,80 @@ function initMotion() {
 }
 
 function handleOrientation(event) {
-  const beta = event.beta; if (state.step !== 'active') return;
-  if (beta > 130 && lastTilt === 0) { lastTilt = 1; handleHeadsUpAction(true); }
-  else if (beta < 40 && lastTilt === 0) { lastTilt = -1; handleHeadsUpAction(false); }
-  else if (beta > 70 && beta < 110) lastTilt = 0;
+  if (state.step !== 'active') return;
+
+  const beta = event.beta;   // Inclinaison avant/arrière (portrait)
+  const gamma = event.gamma; // Inclinaison gauche/droite (paysage)
+
+  // Détection du mode d'orientation
+  const isLandscape = window.innerWidth > window.innerHeight;
+
+  if (isLandscape) {
+    // Mode PAYSAGE : utiliser gamma (gauche/droite)
+    // Téléphone penché vers la droite (gamma > 60) = OK
+    // Téléphone penché vers la gauche (gamma < -60) = PASSER
+    if (gamma > 60 && lastTilt === 0) {
+      lastTilt = 1;
+      handleHeadsUpAction(true);
+    } else if (gamma < -60 && lastTilt === 0) {
+      lastTilt = -1;
+      handleHeadsUpAction(false);
+    } else if (gamma > -30 && gamma < 30) {
+      lastTilt = 0;
+    }
+  } else {
+    // Mode PORTRAIT : utiliser beta (avant/arrière)
+    // Téléphone penché en arrière (beta > 130) = OK
+    // Téléphone penché en avant (beta < 40) = PASSER
+    if (beta > 130 && lastTilt === 0) {
+      lastTilt = 1;
+      handleHeadsUpAction(true);
+    } else if (beta < 40 && lastTilt === 0) {
+      lastTilt = -1;
+      handleHeadsUpAction(false);
+    } else if (beta > 70 && beta < 110) {
+      lastTilt = 0;
+    }
+  }
 }
 
 function handleHeadsUpAction(isSuccess) {
+  const currentWord = headsUpCards[state.currentCardIndex];
+
   if (isSuccess) {
     state.score++
+    state.foundWords.push(currentWord)
     playSound('ok')
+    flashColor('#00ff88') // Vert pour OK
     if (navigator.vibrate) navigator.vibrate(100)
   } else {
+    state.missedWords.push(currentWord)
     playSound('ko')
+    flashColor('#ff3366') // Rouge pour KO
     if (navigator.vibrate) navigator.vibrate([50, 50])
   }
   state.currentCardIndex++
   if (state.currentCardIndex >= headsUpCards.length) endHeadsUp()
   else render()
+}
+
+// Flash de couleur pour feedback visuel
+function flashColor(color) {
+  const overlay = document.createElement('div')
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: ${color};
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 9999;
+    animation: flash 0.3s ease-out;
+  `
+  document.body.appendChild(overlay)
+  setTimeout(() => overlay.remove(), 300)
 }
 
 function renderHeadsUp() {
@@ -366,14 +466,51 @@ function renderHeadsUp() {
     app.appendChild(view)
   } else if (state.step === 'result') {
     view.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+
+    const foundList = state.foundWords.map(word =>
+      `<div class="recap-item found">
+        <span class="recap-icon">✅</span>
+        <span class="recap-word">${word}</span>
+      </div>`
+    ).join('');
+
+    const missedList = state.missedWords.map(word =>
+      `<div class="recap-item missed">
+        <span class="recap-icon">❌</span>
+        <div style="flex: 1;">
+          <div class="recap-word">${word}</div>
+          <div class="recap-hint">${getHint(word)}</div>
+        </div>
+      </div>`
+    ).join('');
+
     view.innerHTML = `
-      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 2rem;">
-        <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
-        <h1 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; text-transform: uppercase;">Temps écoulé !</h1>
-        <div style="font-size: 6rem; font-weight: 900; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,0.3); margin: 1rem 0;">${state.score}</div>
-        <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 3rem;">points</p>
-        <button class="button" id="hu-replay" style="width: 100%; max-width: 300px; margin-bottom: 1rem;">REJOUER</button>
-        <button class="button ghost" id="hu-home" style="width: 100%; max-width: 300px;">ACCUEIL</button>
+      <div style="flex:1; display:flex; flex-direction:column; padding: 1.5rem; overflow-y: auto;">
+        <div style="text-align:center; margin-bottom: 1.5rem;">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
+          <h1 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 0.5rem;">Partie terminée !</h1>
+          <div style="font-size: 3rem; font-weight: 900; color: #fff; margin: 0.5rem 0;">${state.score}</div>
+          <p style="font-size: 1rem; opacity: 0.8;">points</p>
+        </div>
+        
+        ${state.foundWords.length > 0 ? `
+          <div class="recap-section">
+            <h3 class="recap-title">✅ Trouvés (${state.foundWords.length})</h3>
+            ${foundList}
+          </div>
+        ` : ''}
+        
+        ${state.missedWords.length > 0 ? `
+          <div class="recap-section">
+            <h3 class="recap-title">❌ Manqués (${state.missedWords.length})</h3>
+            ${missedList}
+          </div>
+        ` : ''}
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button class="button" id="hu-replay" style="flex: 1;">REJOUER</button>
+          <button class="button ghost" id="hu-home" style="flex: 1;">ACCUEIL</button>
+        </div>
       </div>
     `
     app.appendChild(view)
@@ -381,7 +518,35 @@ function renderHeadsUp() {
     document.querySelector('#hu-home').onclick = () => setState({ view: 'home' })
   } else {
     const card = headsUpCards[state.currentCardIndex]
-    view.innerHTML = `<div style="text-align: center;"><div class="timer-pill">${state.timer}S</div></div><div class="huge-card card">${card}</div><div style="text-align: center;"><div class="score-badge">SCORE: ${state.score} ${state.childMode ? '<span class="child-tag">Kids</span>' : ''}</div><div class="label" style="margin-top: 2rem; opacity: 0.5;">↑ TILT ARRIÈRE = OK<br>↓ TILT AVANT = PASSER</div></div>`
+    const progress = (state.timer / 60) * 100; // Pourcentage de temps restant
+
+    view.innerHTML = `
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between; padding: 1rem;">
+        <!-- Barre de progression avec infos -->
+        <div style="position: relative; width: 100%; background: rgba(0,0,0,0.3); border-radius: 20px; overflow: hidden; height: 60px; border: 2px solid var(--border);">
+          <!-- Barre de remplissage -->
+          <div style="position: absolute; top: 0; left: 0; height: 100%; width: ${progress}%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 1s linear;"></div>
+          
+          <!-- Contenu de la barre -->
+          <div style="position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; height: 100%; z-index: 1;">
+            <div style="font-weight: 800; font-size: 1.2rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${state.timer}S</div>
+            <div style="font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.9); text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+              ↑ OK<br>↓ PASSER
+            </div>
+            <div style="font-weight: 800; font-size: 1.2rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+              ${state.score} ${state.childMode ? '<span style="background: var(--accent); color: #000; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem;">KIDS</span>' : ''}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mot géant au centre -->
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+          <div style="font-size: clamp(3rem, 12vw, 8rem); font-weight: 900; text-align: center; line-height: 1; text-transform: uppercase; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            ${card}
+          </div>
+        </div>
+      </div>
+    `
     app.appendChild(view)
   }
 }
