@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exportateur de données SQLite</title>
+</head>
+<body>
+    <h1>Exportateur de données SQLite</h1>
+    <p>Ouvrez la console du navigateur pour voir les données exportées</p>
+    
+    <script src="assets/data/sql-wasm.js"></script>
+    <script>
+        async function exportData() {
+            const SQL = await initSqlJs({
+                locateFile: file => 'assets/data/' + file
+            });
+            
+            // Charger la base de données
+            const response = await fetch('assets/data/games.db');
+            const arrayBuffer = await response.arrayBuffer();
+            const uint8Array = new Uint8Array(arrayBuffer);
+            const db = new SQL.Database(uint8Array);
+            
+            // Récupérer toutes les tables
+            const tables = ['pigeon', 'heads_up', 'undercover'];
+            
+            const allData = {};
+            
+            tables.forEach(table => {
+                try {
+                    const result = db.exec(`SELECT * FROM ${table}`);
+                    if (result.length > 0) {
+                        const rows = result[0].values.map(row => {
+                            const obj = {};
+                            result[0].columns.forEach((col, index) => {
+                                obj[col] = row[index];
+                            });
+                            return obj;
+                        });
+                        allData[table] = rows;
+                    }
+                } catch (e) {
+                    console.error(`Erreur lors de l'export de la table ${table}:`, e);
+                }
+            });
+            
+            console.log('Données exportées:');
+            console.log(JSON.stringify(allData, null, 2));
+            
+            // Créer des liens de téléchargement
+            Object.keys(allData).forEach(tableName => {
+                const dataStr = JSON.stringify(allData[tableName], null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = `${tableName}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.innerHTML = `Télécharger ${tableName}.json`;
+                
+                document.body.appendChild(linkElement);
+                document.body.appendChild(document.createElement('br'));
+            });
+            
+            db.close();
+        }
+        
+        // Exécuter l'export
+        exportData();
+    </script>
+</body>
+</html>

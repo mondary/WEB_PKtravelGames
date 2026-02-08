@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "question": "Quelle est ta couleur préférée ?",
+    "answer": "Le bleu",
+    "fake1": "Le rouge",
+    "fake2": "Le vert",
+    "mode": "adult"
+  },
+  {
+    "id": 2,
+    "question": "Quel est ton film préféré ?",
+    "answer": "Inception",
+    "fake1": "Avatar",
+    "fake2": "Titanic",
+    "mode": "adult"
+  },
+  {
+    "id": 3,
+    "question": "Quel est ton plat préféré ?",
+    "answer": "Les pâtes",
+    "fake1": "Le riz",
+    "fake2": "Les pommes de terre",
+    "mode": "kids"
+  }
+]

@@ -18,19 +18,11 @@ let state = {
   dbReady: false
 }
 
-// Initialize SQLite
+// Initialize data manager
 async function initDatabase() {
   try {
-    const initSqlJs = window.initSqlJs;
-    const SQL = await initSqlJs({
-      locateFile: file => 'assets/data/' + file
-    });
-
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const dbFile = isLocal ? 'games.db' : 'games.php';
-    const response = await fetch(`assets/data/${dbFile}`, { cache: 'no-store' });
-    const arrayBuffer = await response.arrayBuffer();
-    db = new SQL.Database(new Uint8Array(arrayBuffer));
+    db = new DataManager();
+    await db.loadData();
 
     state.dbReady = true;
 
