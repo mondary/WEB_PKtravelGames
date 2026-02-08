@@ -1,17 +1,17 @@
-const CACHE_NAME = 'pk-travel-games-v1';
+const CACHE_NAME = 'pk-travel-games-v4';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
-  'manifest.json',
-  'games.php',
-  'sql-wasm.js',
-  'sql-wasm.wasm',
-  'css/style.css',
-  'js/main.js',
-  'images/logo.png',
-  'images/pigeon.png',
-  'images/frontal.png',
-  'images/espion.png'
+  'assets/pwa/manifest.json',
+  'assets/data/games.php',
+  'assets/data/sql-wasm.js',
+  'assets/data/sql-wasm.wasm',
+  'assets/css/style.css',
+  'assets/js/main.js',
+  'assets/images/logo.png',
+  'assets/images/pigeon.png',
+  'assets/images/frontal.png',
+  'assets/images/espion.png'
 ];
 
 // Installation - mise en cache des ressources

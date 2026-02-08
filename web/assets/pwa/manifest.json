@@ -2,7 +2,7 @@
   "name": "PK Travel Games",
   "short_name": "PK Games",
   "description": "Jeux de société pour voyages et soirées entre amis",
-  "start_url": "./",
+  "start_url": "../../",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#667eea",
