@@ -81,7 +81,7 @@ body::before {
 
 #app {
   width: 100%;
-  height: 100dvh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -148,12 +148,24 @@ body::before {
 }
 
 /* UI Components */
+/* Main Container */
+#app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .screen {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  max-width: 500px;
+  max-width: 800px;
+  /* Increased from 500px for better desktop view */
   margin: 0 auto;
   width: 100%;
   animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
@@ -162,9 +174,38 @@ body::before {
 .home-header {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  margin: 1rem 0 2rem;
+  justify-content: center;
+  /* Center align for desktop */
+  gap: 1.5rem;
+  margin: 2rem 0 3rem;
   padding: 0.5rem;
+}
+
+/* ... existing styles ... */
+
+/* Desktop adjustments */
+@media (min-width: 768px) {
+  .menu-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .menu-item {
+    height: 180px;
+  }
+
+  .menu-item img {
+    width: 150px;
+  }
+
+  .huge-card {
+    font-size: 4rem;
+    padding: 3rem;
+  }
+
+  .app-title {
+    font-size: 2.5rem;
+  }
 }
 
 .hero-logo {

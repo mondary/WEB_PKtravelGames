@@ -34,6 +34,7 @@
 
 ## 🧾 Changelog
 
+- **1.2.0** : Recap visuel des réponses, contrôles desktop pour Le Frontal, cache PWA v5, accès DB local/OVH fiabilisé (headers .htaccess)
 - **1.1.0** : Refonte vanilla JS (suppression Vite/node_modules), nouvelle architecture web/, fix OVH (PHP proxy pour .db)
 - **1.0.0** : Release initiale - 3 jeux, PWA, vanilla JS
 

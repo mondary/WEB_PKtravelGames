@@ -1,0 +1,8 @@
+<IfModule mod_mime.c>
+  AddType application/wasm .wasm
+  AddType application/octet-stream .db
+</IfModule>
+<IfModule mod_headers.c>
+  Header set Cross-Origin-Opener-Policy "same-origin"
+  Header set Cross-Origin-Embedder-Policy "require-corp"
+</IfModule>

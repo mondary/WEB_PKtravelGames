@@ -34,6 +34,7 @@
 
 ## 🧾 Changelog
 
+- **1.2.0** : Visual recap, desktop controls for Heads Up, PWA cache v5, more reliable local/OVH DB access (headers .htaccess)
 - **1.1.0** : Vanilla JS refactor (removed Vite/node_modules), new web/ architecture, OVH fix (PHP proxy for .db)
 - **1.0.0** : Initial release - 3 games, PWA, vanilla JS
 

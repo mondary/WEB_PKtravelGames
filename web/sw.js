@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pk-travel-games-v4';
+const CACHE_NAME = 'pk-travel-games-v5';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',

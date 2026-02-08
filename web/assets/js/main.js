@@ -26,11 +26,19 @@ async function initDatabase() {
       locateFile: file => 'assets/data/' + file
     });
 
-    const response = await fetch('assets/data/games.php', { cache: 'no-store' });
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const dbFile = isLocal ? 'games.db' : 'games.php';
+    const response = await fetch(`assets/data/${dbFile}`, { cache: 'no-store' });
     const arrayBuffer = await response.arrayBuffer();
     db = new SQL.Database(new Uint8Array(arrayBuffer));
 
     state.dbReady = true;
+
+    // Initialize kid-mode class if childMode is active
+    if (state.childMode) {
+      document.body.classList.add('kid-mode');
+    }
+
     render();
   } catch (err) {
     console.error("Failed to load database:", err);
@@ -331,8 +339,14 @@ function startTimer() {
     if (state.timer > 0) {
       state.timer--
       // Mise à jour directe sans re-render complet
-      const timerEl = document.querySelector('.timer-pill')
+      const timerEl = document.getElementById('hu-timer-text')
+      const barEl = document.getElementById('hu-progress-bar')
+
       if (timerEl) timerEl.textContent = state.timer + 'S'
+      if (barEl) {
+        const progress = (state.timer / 60) * 100;
+        barEl.style.width = progress + '%'
+      }
     } else {
       endHeadsUp()
     }
@@ -342,6 +356,8 @@ function startTimer() {
 function endHeadsUp() {
   clearInterval(headsUpTimer)
   window.removeEventListener('deviceorientation', handleOrientation)
+  window.removeEventListener('keydown', handleKeyboard)
+  window.removeEventListener('wheel', handleScroll)
   unlockOrientation()
   playSound('alarm')
   setState({ step: 'result' })
@@ -351,6 +367,32 @@ function initMotion() {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission().then(r => { if (r == 'granted') window.addEventListener('deviceorientation', handleOrientation) })
   } else window.addEventListener('deviceorientation', handleOrientation)
+
+  // Contrôles Desktop (Clavier + Scroll)
+  window.addEventListener('keydown', handleKeyboard)
+  window.addEventListener('wheel', handleScroll)
+}
+
+function handleKeyboard(e) {
+  if (state.step !== 'active') return;
+  if (e.key === 'ArrowUp') handleHeadsUpAction(true);
+  if (e.key === 'ArrowDown') handleHeadsUpAction(false);
+}
+
+// Debounce pour le scroll pour éviter les déclenchements multiples
+let lastScrollTime = 0;
+function handleScroll(e) {
+  if (state.step !== 'active') return;
+  const now = Date.now();
+  if (now - lastScrollTime < 500) return; // 500ms délai
+
+  if (e.deltaY < -10) { // Scroll vers le haut (OK)
+    lastScrollTime = now;
+    handleHeadsUpAction(true);
+  } else if (e.deltaY > 10) { // Scroll vers le bas (KO)
+    lastScrollTime = now;
+    handleHeadsUpAction(false);
+  }
 }
 
 function handleOrientation(event) {
@@ -525,11 +567,11 @@ function renderHeadsUp() {
         <!-- Barre de progression avec infos -->
         <div style="position: relative; width: 100%; background: rgba(0,0,0,0.3); border-radius: 20px; overflow: hidden; height: 60px; border: 2px solid var(--border);">
           <!-- Barre de remplissage -->
-          <div style="position: absolute; top: 0; left: 0; height: 100%; width: ${progress}%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 1s linear;"></div>
+          <div id="hu-progress-bar" style="position: absolute; top: 0; left: 0; height: 100%; width: ${progress}%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 1s linear;"></div>
           
           <!-- Contenu de la barre -->
           <div style="position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; height: 100%; z-index: 1;">
-            <div style="font-weight: 800; font-size: 1.2rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${state.timer}S</div>
+            <div id="hu-timer-text" style="font-weight: 800; font-size: 1.2rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${state.timer}S</div>
             <div style="font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.9); text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
               ↑ OK<br>↓ PASSER
             </div>
